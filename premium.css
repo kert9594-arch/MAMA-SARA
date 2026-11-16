@@ -3025,3 +3025,103 @@ html body #purchaseOverlay.show .purchase-footer-actions {
   body .hero-banner h1 { font-size: 19px !important; }
   body .hero-banner p { font-size: 10px !important; }
 }
+
+/* RESPONSIVE PRODUCT PHOTO FIX — laptop and phone */
+.product-premium .product-img {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+.product-premium .product-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+  object-position: center 45%;
+}
+@media (max-width: 700px) {
+  .product-premium .product-img {
+    height: auto !important;
+    aspect-ratio: 1.78 / 1 !important;
+    padding: 0 !important;
+    align-items: center !important;
+    justify-items: center !important;
+  }
+  .product-premium .product-photo {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center 44% !important;
+    transform: translateY(-2px) !important;
+  }
+  .product-premium:hover .product-photo,
+  .product-premium:focus-within .product-photo {
+    transform: translateY(-2px) !important;
+  }
+}
+@media (min-width: 701px) {
+  .product-premium .product-img {
+    aspect-ratio: 1.35 / 1;
+    padding: clamp(10px, 1.2vw, 16px);
+  }
+  .product-premium .product-photo {
+    object-fit: contain;
+    object-position: center;
+    transform: none;
+  }
+}
+
+/* FINAL RESPONSIVE HERO SPACING — compact on phones, balanced on desktop */
+body .hero {
+  padding: clamp(8px, 1.4vw, 18px) 0 clamp(7px, 1.2vw, 14px) !important;
+}
+body .hero-inner {
+  width: min(calc(100% - clamp(16px, 3vw, 40px)), 1440px) !important;
+  max-width: 1440px !important;
+  margin-inline: auto !important;
+}
+body .hero-banner {
+  width: 100% !important;
+  max-width: none !important;
+  height: clamp(210px, 25vw, 320px) !important;
+  min-height: 0 !important;
+  max-height: 320px !important;
+  margin: 0 !important;
+  padding: clamp(18px, 3vw, 38px) clamp(16px, 3.2vw, 42px) !important;
+  gap: clamp(10px, 2.5vw, 32px) !important;
+  box-sizing: border-box !important;
+}
+body .hero-dots {
+  padding-top: clamp(5px, .8vw, 9px) !important;
+  min-height: 0 !important;
+}
+@media (max-width: 700px) {
+  body .hero { padding: 7px 0 6px !important; }
+  body .hero-inner { width: calc(100% - 20px) !important; }
+  body .hero-banner {
+    height: clamp(174px, 48vw, 218px) !important;
+    min-height: 0 !important;
+    max-height: 218px !important;
+    padding: clamp(11px, 3vw, 16px) clamp(10px, 3vw, 16px) !important;
+    gap: clamp(6px, 2vw, 11px) !important;
+    border-radius: 17px !important;
+  }
+  body .hero-copy { flex: 1 1 60% !important; max-width: 60% !important; }
+  body .hero-banner h1 { margin: 7px 0 6px !important; }
+  body .hero-banner p { margin-bottom: 5px !important; }
+  body .hero-banner button { margin-top: 7px !important; }
+  body .hero-art { height: 88% !important; max-height: 100% !important; }
+  body .hero-dots { padding-top: 5px !important; min-height: 15px !important; }
+}
+@media (max-width: 390px) {
+  body .hero-inner { width: calc(100% - 16px) !important; }
+  body .hero-banner {
+    height: 174px !important;
+    padding: 10px 9px !important;
+    gap: 6px !important;
+  }
+  body .hero-banner h1 { font-size: clamp(17px, 5vw, 20px) !important; }
+  body .hero-banner p { font-size: 9px !important; }
+}
