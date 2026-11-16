@@ -4,14 +4,14 @@ let addressEditorFromCheckout = false;
 function safeReadJSON(key, fallback){try{const value=localStorage.getItem(key);return value?JSON.parse(value):fallback}catch(error){console.warn('Data lokal tidak valid, memakai nilai awal untuk',key);return fallback}}
 let authMode='login', pendingAction=null, productTab='Semua', detailQty=1, detailVariant='Isi 3', detailProductId=null, cart=safeReadJSON('dinsumCart',[]).map(i=>({...i,id:Number(i.id),qty:Math.max(1,Number(i.qty)||1)})), selectedCartIds=new Set(cart.map(i=>Number(i.id))), selectedPayment={name:'BRI',img:'assets/bri.svg'}, selectedShipping={name:'J&T Express',img:'assets/jnt.svg',estimate:'Estimasi 2–4 hari',cost:12000}, selectedVoucher='none', pickupAtStore=false;
 const products=[
-{id:1,name:'DIMSUM Ayam Original',description:'Dimsum ayam dengan cita rasa gurih klasik, cocok untuk camilan, teman makan, atau sajian bersama keluarga.',tag:'Terlaris',price:89000,old:110000,image:'assets/products/dimsum-ayam-original.JPEG',sold:'2,3RB'},
-{id:2,name:'DIMSUM Udang Premium',description:'Pilihan dimsum dengan perpaduan rasa gurih ayam dan udang yang cocok untuk kamu yang menyukai rasa seafood.',tag:'Terlaris',price:99000,old:125000,image:'assets/products/dimsum-udang-baru.JPEG',sold:'1,8RB'},
-{id:3,name:'DIMSUM Mentai',description:'Dimsum dengan sentuhan saus mentai yang creamy dan gurih, pilihan menarik untuk camilan dengan rasa lebih kaya.',tag:'Promo',price:95000,old:120000,image:'assets/products/dimsum-mentai.JPEG',sold:'1,1RB'},
-{id:4,name:'DIMSUM Nori',description:'Dimsum dengan sentuhan nori yang memberi aroma khas dan rasa gurih, cocok untuk variasi menu dimsum favoritmu.',tag:'Promo',price:92000,old:115000,image:'assets/products/dimsum-nori.JPEG',sold:'985'},
-{id:5,name:'DIMSUM Mozarella',description:'Dimsum dengan perpaduan rasa gurih dan keju mozzarella yang cocok untuk pencinta camilan dengan rasa keju.',tag:'Promo',price:105000,old:130000,image:'assets/products/dimsum-mozarella.JPEG',sold:'544'},
-{id:6,name:'DIMSUM Jumbo',description:'Pilihan dimsum berukuran jumbo untuk sajian yang lebih mantap, cocok dinikmati sendiri atau dibagikan bersama.',tag:'Terlaris',price:12000,old:15000,image:'assets/products/dimsum-jumbo.JPEG',sold:'1,5RB'},
-{id:7,name:'DIMSUM Chili Oil',description:'Dimsum dengan sentuhan chili oil untuk sensasi gurih dan pedas, cocok bagi kamu yang menyukai rasa lebih berani.',tag:'Promo',price:14000,old:17000,image:'assets/products/dimsum-chili-oil.JPEG',sold:'680'},
-{id:8,name:'DIMSUM Mix Box',description:'Kotak pilihan berisi variasi dimsum dalam satu paket, cocok untuk mencoba beberapa pilihan atau disajikan saat berkumpul.',tag:'Baru',price:25000,old:150000,image:'assets/products/dimsum-mix-box.JPEG',sold:'432'}];
+{id:1,name:'DIMSUM Ayam Original',description:'Dimsum ayam dengan cita rasa gurih klasik, cocok untuk camilan, teman makan, atau sajian bersama keluarga.',tag:'Terlaris',price:89000,old:110000,image:'assets/products/dimsum-ayam-original.jpeg',sold:'2,3RB'},
+{id:2,name:'DIMSUM Udang Premium',description:'Pilihan dimsum dengan perpaduan rasa gurih ayam dan udang yang cocok untuk kamu yang menyukai rasa seafood.',tag:'Terlaris',price:99000,old:125000,image:'assets/products/dimsum-udang-baru.jpeg',sold:'1,8RB'},
+{id:3,name:'DIMSUM Mentai',description:'Dimsum dengan sentuhan saus mentai yang creamy dan gurih, pilihan menarik untuk camilan dengan rasa lebih kaya.',tag:'Promo',price:95000,old:120000,image:'assets/products/dimsum-mentai.jpeg',sold:'1,1RB'},
+{id:4,name:'DIMSUM Nori',description:'Dimsum dengan sentuhan nori yang memberi aroma khas dan rasa gurih, cocok untuk variasi menu dimsum favoritmu.',tag:'Promo',price:92000,old:115000,image:'assets/products/dimsum-nori.jpeg',sold:'985'},
+{id:5,name:'DIMSUM Mozarella',description:'Dimsum dengan perpaduan rasa gurih dan keju mozzarella yang cocok untuk pencinta camilan dengan rasa keju.',tag:'Promo',price:105000,old:130000,image:'assets/products/dimsum-mozarella.jpeg',sold:'544'},
+{id:6,name:'DIMSUM Jumbo',description:'Pilihan dimsum berukuran jumbo untuk sajian yang lebih mantap, cocok dinikmati sendiri atau dibagikan bersama.',tag:'Terlaris',price:12000,old:15000,image:'assets/products/dimsum-jumbo.jpeg',sold:'1,5RB'},
+{id:7,name:'DIMSUM Chili Oil',description:'Dimsum dengan sentuhan chili oil untuk sensasi gurih dan pedas, cocok bagi kamu yang menyukai rasa lebih berani.',tag:'Promo',price:14000,old:17000,image:'assets/products/dimsum-chili-oil.jpeg',sold:'680'},
+{id:8,name:'DIMSUM Mix Box',description:'Kotak pilihan berisi variasi dimsum dalam satu paket, cocok untuk mencoba beberapa pilihan atau disajikan saat berkumpul.',tag:'Baru',price:25000,old:150000,image:'assets/products/dimsum-mix-box.jpeg',sold:'432'}];
 const rupiah=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
 function packagePrice(product, variant){
   const prices={
@@ -996,8 +996,19 @@ document.addEventListener('click',function(event){
   openAuth('login');
 },true);
 
-// Tampilkan login otomatis saat pengunjung membuka website tanpa sesi akun.
-if(!getUser()) openAuth('login');
+// Aksesibilitas: tombol/kartu yang diaktifkan lewat keyboard juga meminta login.
+document.addEventListener('keydown',function(event){
+  if(getUser() || (event.key!=='Enter' && event.key!==' ')) return;
+  const store=document.getElementById('storePage');
+  if(!store || store.classList.contains('hidden') || !store.contains(event.target)) return;
+  event.preventDefault();
+  event.stopPropagation();
+  if(typeof event.stopImmediatePropagation==='function') event.stopImmediatePropagation();
+  openAuth('login');
+},true);
+
+// Pengunjung langsung melihat beranda. Form login baru muncul saat mereka
+// mencoba menggunakan fitur atau berinteraksi dengan elemen toko.
 
 
 // V28: ESC always closes camera/recording view
